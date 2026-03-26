@@ -402,6 +402,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Apply search and filter, and handle weekend filter in client
       displayFilteredActivities();
+
+      // Highlight activity from shared URL if present
+      highlightSharedActivity();
     } catch (error) {
       activitiesList.innerHTML =
         "<p>Failed to load activities. Please try again later.</p>";
@@ -568,6 +571,14 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
+        <div class="share-container">
+          <button class="share-button" title="Share this activity">🔗 Share</button>
+          <div class="share-dropdown">
+            <button class="share-option" data-action="copy">📋 Copy Link</button>
+            <a class="share-option" data-action="twitter" href="#" target="_blank" rel="noopener noreferrer">𝕏 Share on X</a>
+            <a class="share-option" data-action="facebook" href="#" target="_blank" rel="noopener noreferrer">📘 Share on Facebook</a>
+          </div>
+        </div>
       </div>
     `;
 
@@ -587,6 +598,42 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    // Add share button handlers
+    const shareButton = activityCard.querySelector(".share-button");
+    const shareDropdown = activityCard.querySelector(".share-dropdown");
+    const shareUrl = `${window.location.origin}${window.location.pathname}?activity=${encodeURIComponent(name)}`;
+    const shareText = `Check out ${name} at Mergington High School!\n${details.description}`;
+
+    shareButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (navigator.share) {
+        navigator.share({ title: name, text: shareText, url: shareUrl }).catch(() => {});
+        return;
+      }
+      // Close any other open dropdowns
+      document.querySelectorAll(".share-dropdown.visible").forEach((d) => {
+        if (d !== shareDropdown) d.classList.remove("visible");
+      });
+      shareDropdown.classList.toggle("visible");
+    });
+
+    activityCard.querySelector('[data-action="copy"]').addEventListener("click", () => {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        showMessage("Link copied to clipboard!", "success");
+      }).catch(() => {
+        showMessage("Could not copy link.", "error");
+      });
+      shareDropdown.classList.remove("visible");
+    });
+
+    const twitterLink = activityCard.querySelector('[data-action="twitter"]');
+    twitterLink.addEventListener("click", () => { shareDropdown.classList.remove("visible"); });
+    twitterLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+
+    const facebookLink = activityCard.querySelector('[data-action="facebook"]');
+    facebookLink.addEventListener("click", () => { shareDropdown.classList.remove("visible"); });
+    facebookLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+
     activitiesList.appendChild(activityCard);
   }
 
@@ -594,6 +641,11 @@ document.addEventListener("DOMContentLoaded", () => {
   searchInput.addEventListener("input", (event) => {
     searchQuery = event.target.value;
     displayFilteredActivities();
+  });
+
+  // Close share dropdowns when clicking outside
+  document.addEventListener("click", () => {
+    document.querySelectorAll(".share-dropdown.visible").forEach((d) => d.classList.remove("visible"));
   });
 
   searchButton.addEventListener("click", (event) => {
@@ -860,6 +912,23 @@ document.addEventListener("DOMContentLoaded", () => {
     setDayFilter,
     setTimeRangeFilter,
   };
+
+  // Scroll to and highlight the activity named in the ?activity= URL parameter
+  function highlightSharedActivity() {
+    const params = new URLSearchParams(window.location.search);
+    const targetName = params.get("activity");
+    if (!targetName) return;
+
+    const cards = activitiesList.querySelectorAll(".activity-card");
+    cards.forEach((card) => {
+      const heading = card.querySelector("h4");
+      if (heading && heading.textContent.trim() === targetName) {
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+        card.classList.add("highlighted");
+        setTimeout(() => card.classList.remove("highlighted"), 3000);
+      }
+    });
+  }
 
   // Initialize app
   checkAuthentication();

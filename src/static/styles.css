@@ -169,6 +169,17 @@ section h3 {
   border-color: var(--border-focus);
 }
 
+.activity-card.highlighted {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(255, 111, 0, 0.3);
+  animation: highlight-pulse 3s ease forwards;
+}
+
+@keyframes highlight-pulse {
+  0% { box-shadow: 0 0 0 4px rgba(255, 111, 0, 0.5); }
+  100% { box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); }
+}
+
 .activity-card h4 {
   margin-bottom: 8px;
   color: var(--primary);
@@ -187,7 +198,68 @@ section h3 {
   margin-top: auto;
   padding-top: 10px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Share button */
+.share-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.share-button {
+  background: none;
+  border: 1px solid var(--primary-light);
+  color: var(--primary);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.share-button:hover {
+  background-color: var(--primary);
+  color: white;
+}
+
+.share-dropdown {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 5px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  min-width: 155px;
+  padding: 4px 0;
+}
+
+.share-dropdown.visible {
+  display: block;
+}
+
+.share-option {
+  display: block;
+  padding: 7px 12px;
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: background-color 0.2s;
+}
+
+.share-option:hover {
+  background-color: var(--background);
 }
 
 /* Activity Tag */
