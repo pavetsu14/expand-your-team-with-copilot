@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
     currentDifficulty = difficulty;
 
     difficultyFilters.forEach((btn) => {
-      if (btn.dataset.difficulty === difficulty) {
+      if (btn.dataset.difficulty === currentDifficulty) {
         btn.classList.add("active");
       } else {
         btn.classList.remove("active");
@@ -329,6 +329,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return details.schedule;
   }
 
+  function formatDifficultyLabel(difficulty) {
+    if (!difficulty) {
+      return "";
+    }
+
+    return difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+  }
+
   // Function to determine activity type (this would ideally come from backend)
   function getActivityType(activityName, description) {
     const name = activityName.toLowerCase();
@@ -528,9 +536,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Format the schedule using the new helper function
     const formattedSchedule = formatSchedule(details);
-    const difficultyLabel = details.difficulty
-      ? details.difficulty.charAt(0).toUpperCase() + details.difficulty.slice(1)
-      : "";
+    const difficultyLabel = formatDifficultyLabel(details.difficulty);
 
     // Create activity tag
     const tagHtml = `
@@ -655,11 +661,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Add event listeners to difficulty filter buttons
   difficultyFilters.forEach((button) => {
     button.addEventListener("click", () => {
-      const nextDifficulty =
-        currentDifficulty === button.dataset.difficulty
-          ? ""
-          : button.dataset.difficulty;
-      setDifficultyFilter(nextDifficulty);
+      setDifficultyFilter(button.dataset.difficulty);
     });
   });
 

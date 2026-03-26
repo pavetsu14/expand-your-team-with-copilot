@@ -10,6 +10,7 @@ client = MongoClient('mongodb://localhost:27017/')
 db = client['mergington_high']
 activities_collection = db['activities']
 teachers_collection = db['teachers']
+metadata_collection = db['metadata']
 
 # Methods
 def hash_password(password):
@@ -25,12 +26,15 @@ def init_database():
         for name, details in initial_activities.items():
             activities_collection.insert_one({"_id": name, **details})
 
-    for name, details in initial_activities.items():
-        if "difficulty" in details:
-            activities_collection.update_one(
-                {"_id": name},
-                {"$set": {"difficulty": details["difficulty"]}}
-            )
+    difficulty_migration = metadata_collection.find_one({"_id": "activity_difficulty_v1"})
+    if not difficulty_migration:
+        for name, details in initial_activities.items():
+            if "difficulty" in details:
+                activities_collection.update_one(
+                    {"_id": name},
+                    {"$set": {"difficulty": details["difficulty"]}}
+                )
+        metadata_collection.insert_one({"_id": "activity_difficulty_v1"})
              
     # Initialize teacher accounts if empty
     if teachers_collection.count_documents({}) == 0:
