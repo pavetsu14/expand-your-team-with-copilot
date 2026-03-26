@@ -24,7 +24,14 @@ def init_database():
     if activities_collection.count_documents({}) == 0:
         for name, details in initial_activities.items():
             activities_collection.insert_one({"_id": name, **details})
-            
+
+    for name, details in initial_activities.items():
+        if "difficulty" in details:
+            activities_collection.update_one(
+                {"_id": name},
+                {"$set": {"difficulty": details["difficulty"]}}
+            )
+             
     # Initialize teacher accounts if empty
     if teachers_collection.count_documents({}) == 0:
         for teacher in initial_teachers:
@@ -51,6 +58,7 @@ initial_activities = {
             "start_time": "07:00",
             "end_time": "08:00"
         },
+        "difficulty": "beginner",
         "max_participants": 20,
         "participants": ["emma@mergington.edu", "sophia@mergington.edu"]
     },
@@ -62,6 +70,7 @@ initial_activities = {
             "start_time": "06:30",
             "end_time": "07:45"
         },
+        "difficulty": "beginner",
         "max_participants": 30,
         "participants": ["john@mergington.edu", "olivia@mergington.edu"]
     },
@@ -73,6 +82,7 @@ initial_activities = {
             "start_time": "15:30",
             "end_time": "17:30"
         },
+        "difficulty": "intermediate",
         "max_participants": 22,
         "participants": ["liam@mergington.edu", "noah@mergington.edu"]
     },
@@ -95,6 +105,7 @@ initial_activities = {
             "start_time": "15:15",
             "end_time": "17:00"
         },
+        "difficulty": "beginner",
         "max_participants": 15,
         "participants": ["amelia@mergington.edu", "harper@mergington.edu"]
     },
@@ -106,6 +117,7 @@ initial_activities = {
             "start_time": "15:30",
             "end_time": "17:30"
         },
+        "difficulty": "intermediate",
         "max_participants": 20,
         "participants": ["ella@mergington.edu", "scarlett@mergington.edu"]
     },
@@ -117,6 +129,7 @@ initial_activities = {
             "start_time": "07:15",
             "end_time": "08:00"
         },
+        "difficulty": "advanced",
         "max_participants": 10,
         "participants": ["james@mergington.edu", "benjamin@mergington.edu"]
     },
@@ -139,6 +152,7 @@ initial_activities = {
             "start_time": "10:00",
             "end_time": "14:00"
         },
+        "difficulty": "advanced",
         "max_participants": 15,
         "participants": ["ethan@mergington.edu", "oliver@mergington.edu"]
     },
@@ -150,6 +164,7 @@ initial_activities = {
             "start_time": "13:00",
             "end_time": "16:00"
         },
+        "difficulty": "advanced",
         "max_participants": 18,
         "participants": ["isabella@mergington.edu", "lucas@mergington.edu"]
     },
@@ -161,6 +176,7 @@ initial_activities = {
             "start_time": "14:00",
             "end_time": "17:00"
         },
+        "difficulty": "advanced",
         "max_participants": 16,
         "participants": ["william@mergington.edu", "jacob@mergington.edu"]
     },
@@ -197,4 +213,3 @@ initial_teachers = [
         "role": "admin"
     }
 ]
-
