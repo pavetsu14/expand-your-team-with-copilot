@@ -48,8 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Authentication state
   let currentUser = null;
 
-  function applyTheme(theme, persist = true) {
-    const nextTheme = theme === "dark" ? "dark" : "light";
+  function setThemeMode(theme, persist = true) {
+    const isSupportedTheme = theme === "light" || theme === "dark";
+    const nextTheme = isSupportedTheme ? theme : "light";
     document.documentElement.setAttribute("data-theme", nextTheme);
     themeToggleButton.setAttribute(
       "aria-label",
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ? "dark"
         : "light");
 
-    applyTheme(preferredTheme, false);
+    setThemeMode(preferredTheme, false);
   }
 
   // Time range mappings for the dropdown
@@ -277,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.documentElement.getAttribute("data-theme") === "dark"
         ? "dark"
         : "light";
-    applyTheme(currentTheme === "dark" ? "light" : "dark");
+    setThemeMode(currentTheme === "dark" ? "light" : "dark");
   });
   logoutButton.addEventListener("click", logout);
   closeLoginModal.addEventListener("click", closeLoginModalHandler);
