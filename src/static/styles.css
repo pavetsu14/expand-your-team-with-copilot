@@ -1,5 +1,7 @@
 /* Color palette */
 :root {
+  color-scheme: light;
+
   /* Primary colors */
   --primary: #1a237e;
   --primary-light: #534bae;
@@ -32,6 +34,37 @@
   --info-light: #d1ecf1;
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --primary: #90caf9;
+  --primary-light: #bbdefb;
+  --primary-dark: #5d99c6;
+  --primary-text: #0d1321;
+
+  --secondary: #ffb74d;
+  --secondary-light: #ffe97d;
+  --secondary-dark: #c88719;
+  --secondary-text: #1f1400;
+
+  --background: #121212;
+  --surface: #1e1e1e;
+  --text-primary: #f5f5f5;
+  --text-secondary: #c7c7c7;
+  --border: #3d3d3d;
+  --border-light: #2c2c2c;
+  --border-focus: #5a5a5a;
+
+  --success: #81c784;
+  --success-light: #1f3a22;
+  --warning: #ffb74d;
+  --warning-light: #3b2f14;
+  --error: #ef9a9a;
+  --error-light: #3b1f1f;
+  --info: #80deea;
+  --info-light: #18353a;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -48,6 +81,7 @@ body {
   padding: 12px;
   background-color: var(--background);
   font-size: 0.9rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 header {
@@ -161,6 +195,11 @@ section h3 {
   position: relative;
   overflow: hidden;
   font-size: 0.85rem;
+  transition:
+    all 0.3s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .activity-card:hover {
@@ -289,13 +328,22 @@ section h3 {
 
 button {
   background-color: var(--primary);
-  color: white;
+  color: var(--primary-text);
   border: none;
   padding: 6px 12px;
   font-size: 0.85rem;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+
+input {
+  background-color: var(--surface);
+  color: var(--text-primary);
+}
+
+input::placeholder {
+  color: var(--text-secondary);
 }
 
 /* Tooltip styles */
@@ -617,6 +665,9 @@ footer {
   position: absolute;
   top: 10px;
   right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 #user-status {
@@ -651,6 +702,10 @@ footer {
 }
 
 .user-icon {
+  font-size: 1rem;
+}
+
+.theme-icon {
   font-size: 1rem;
 }
 
